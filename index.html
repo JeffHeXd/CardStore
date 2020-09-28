@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+    <head>
+        <meta charset="utf-8">
+        <link rel="icon" type="image/png" href="../../favicon.png" /> 
+        <meta name="keywords" content="联动云企业用车登记,共享汽车,联动云企业优惠,联动云95折企业优惠,联动云优惠用车" /> 
+        <meta name="description" content="联动云企业用车,自助加入企业用户，享受用车充值95折优惠" /> 
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+        <title>Jstore - 购买首页</title>
+        <!--此处加载CSS文件-->
+        <link href="../../src/css/all.min.css" rel="stylesheet" type="text/css" /> 
+        <link href="../../src/css/sb-admin.css" rel="stylesheet" />
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.4.1/dist/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous" />
+        <!--此处加载必要的JS文件-->
+        <script src="https://cdn.jsdelivr.net/npm/jquery@3.4.1/dist/jquery.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
+        <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.4.1/dist/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
+        <script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.5.1/jquery.js"></script>
+        <script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.4.1/dist/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
+        <script src="https://cdn.bootcdn.net/ajax/libs/jquery.qrcode/1.0/jquery.qrcode.min.js"></script>
+        <script src="../gt/static/gt.js"></script>
+        <style>
+            body{
+                background-color:#778899;
+            }
+            .cnfont{
+                font-family:Avenir,Helvetica,Arial,sans-serif; 
+                color: #606266;
+                font-weight:bold
+            }
+        </style>
+        <script>
+        window.onload=function(){
+            //检测某些傻逼是否通过微信浏览器打开
+                var ua = navigator.userAgent.toLowerCase();//获取判断用的对象
+                if (ua.match(/MicroMessenger/i) == "micromessenger") {
+                        //在微信中打开
+                        $("#form1").css('display','none');
+                        $("#fuckerror").css('display','block');
+                }
+            }
+        
+        </script>
+    </head>
+    <body>
+    <br>
+        <div class="container">
+            <div class="card">
+                <div class="card-header"><center>仅限支付宝支付 微信请换浏览器打开</center></div>
+                <div class="card-body">
+                    <p class="cnfont" style="text-align:center">
+                        薄利多销 交个朋友<br>购买之前请仔细阅读规则<br>
+                        <a href="query">查询历史订单</a>
+                    </p>
+                    <div class="alert alert-danger" role="alert" id="fuckerror" style="display:none">
+                        请点击右上角，从浏览器打开！
+                    </div>
+                    <form action="ajax?type=order" method="POST" id="form1">
+                        <div class="form-group">
+                            <select name="change_coupon" id="chang" class="form-control" onchange="check_stock()" required>
+                                <option value="">选择购买类型</option>
+                                <option value="test">【测试唔卖】请勿下单，下单不退</option>
+                                <option value="now20">【限时特价】时租共享券20元</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <div class="form-label-group">
+                                <input type="number" name="mobile" id="mobile" class="form-control" required="required">
+                                <label for="inputMobile">手机号码(需要与付款账户一致)：</label>
+                                <div class="invalid-feedback">请输入正确的手机号码</div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <p class="cnfont" style="font-size:12px;color:red;" id="coupon_sum"></p>
+                            <p class="cnfont" style="font-size:12px;color:red;" id="coupon_tips"></p>
+                        </div>
+                        <div class="form-group">
+                            <div id="embed-captcha" class="small"></div>
+                            <p id="wait" class="cnfont" style="text-align:center;font-size:13px">正在加载验证码，若长时间未加载请刷新页面</p>
+                        </div>
+                        <button type="button" id="fuckme" class="btn btn-primary btn-block" disabled="disabled "onclick="cheeck_form()">提交订单</button>
+                    </form>
+                </div>
+                <div class="card-footer text-muted">
+                    <div style="font-size:10px;text-align:center">
+                        <a href="http://wpa.qq.com/msgrd?v=3&uin=734430160&site=qq&menu=yes">联系客服(09:00~17:00)</a>
+                        <br>本站位于中国·香港并遵循当地法律法规<br>ldygo.fun © 版权所有
+                    </div>
+                </div>
+            </div>
+            <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle"aria-hidden="true" data-backdrop="static">
+                <div class="modal-dialog modal-dialog-centered" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h4 class="modal-title" id="exampleModalCenterTitle">为您的订单付款</h4>
+                        </div>
+                    <div class="modal-body" id="pay_model">
+                    <!--公告内容-->
+                    <center>
+                        <div id="qrcode" class="width: 100px;height: 100px;margin: 0 auto;"></div>
+                        <p id="trade"></p>
+                        <p id="tell"></p>
+                        <a href="" id="jump" target="_blank">手机点我跳转支付</a>
+                    </center>
+                    <!--ENd-->
+                    </div>
+                </div>
+            </div> 
+        </div>
+        <script>
+            //获取库存
+            function check_stock(){
+                $.ajax({
+                    type :"POST",
+                    dataType :"json",
+                    data: $('#chang').serialize(),
+                    url: "ajax?type=get_coupon",
+                    success: function(result){
+                        console.log(result);
+                        if(result.sum >= 1){
+                            var resut_sum = '可出售库存剩余 '+result.sum+' 张，购买1张需要支付 '+result.total+' 元';
+                            $("#coupon_sum").html(resut_sum);
+                            $("#coupon_tips").html("购买提醒：<br>"+result.msg);
+                            $("#embed-captcha").css('display','block');
+                            $("#fuckme").css('display','block');
+                        }else{
+                            $("#embed-captcha").css('display','none');
+                            $("#fuckme").css('display','none');
+                            $("#coupon_sum").html("当前无可售库存！");
+                            $("#coupon_tips").html("");
+                        }
+                    },
+                    error: function(){
+                        alert("获取商品详情出现了错误！");
+                    }
+                });
+            }
+            //支付窗口
+            function pay_window(url,total,tradeno){
+                $('#exampleModalCenter').modal({keyboard: false});
+                jQuery('#qrcode').qrcode({render: "table",text:url,width : "200",height : "200",});
+                document.getElementById("trade").innerHTML="订单号："+tradeno;
+                document.getElementById("tell").innerHTML="金额："+total+"元<br>请在90秒内用支付宝支付";
+                document.getElementById("jump").href="alipays://platformapi/startapp?saId=10000007&clientVersion=3.7.0.0718&qrcode="+url;
+                $(function () {
+                    $(".progress").show();
+                    var i = 0;
+                    setInterval(function () {
+                        i++;
+                        $(".progress .progress-bar").attr("aria-valuenow", i * 10);
+                        $(".progress .progress-bar").css("width", (i * 10) + "%");
+                        if (i >= 10) {
+                            i = 1;
+                        }
+                    }, 2000);
+        
+                    setInterval(function () {
+                        var url = "public/orderquery?tradeno="+tradeno;
+                        $.getJSON(url, function (result) {
+                            if (result.code == 200) {
+                                window.location.href = 'https://ldygo.fun/static/store/query?trade='+tradeno;
+                            }
+                        });
+                    }, 3000);
+        
+                });
+            }
+            // //下单
+            // function order(){
+            //     $.ajax({
+            //         type :"POST",
+            //         dataType :"json",
+            //         data: $('#form1').serialize(),
+            //         url: "ajax?type=order",
+            //         success: function(result){
+            //             console.log(result);
+            //             pay_window(result.url,result.total,result.tradeno);
+            //         },
+            //         error: function(){
+            //             alert("下单失败！");
+            //             $("#fuckme").attr("disabled", "false");
+            //             $("#fuckme").html("尝试下单");
+            //         }
+            //     });
+            // }
+            //下单校验，表单验证
+            function cheeck_form(){
+                var mobile = $("#mobile").val();
+                if((/^1[3|4|5|7|8|6|9]\d{9}$/.test(mobile))){
+                    //正则通过
+                    console.log("正则通过");
+                    $("#mobile").attr("readonly","readonly");
+                    $("#chang").attr("readonly","readonly");
+                    $("#mobile").attr("class", "form-control");
+                    $("#fuckme").attr("disabled", "disabled");
+                    $("#fuckme").html("请稍后...");
+                    $("#form1").submit();
+                }else{
+                    $("#mobile").addClass("is-invalid");
+                }
+            }
+            //验证代码
+            var handlerEmbed = function (captchaObj) {
+                $("#submit").click(function (e) {
+                    var validate = captchaObj.getValidate();
+                    if (!validate) {
+                        $("#notice")[0].style = "";
+                        setTimeout(function () {
+                            $("#notice")[0].style = "display:none;";
+                        }, 2000);
+                        e.preventDefault();
+                    }
+                });
+                // 将验证码加到id为captcha的元素里，同时会有三个input的值：geetest_challenge, geetest_validate, geetest_seccode
+                captchaObj.appendTo("#embed-captcha");
+                captchaObj.onReady(function () {
+                    $("#wait")[0].style = "display:none;";
+                });
+                //验证成功后操作
+                captchaObj.onSuccess(function () {
+                	//cheek();
+                	document.getElementById("fuckme").disabled=false;
+                	document.getElementById("smscode").readOnly=true;
+                	//document.getElementById("tips").style='display:none';
+                	//$("#geekcheck")[0].style = "display:;";
+                // 出错啦，可以提醒用户稍后进行重试
+                // error 包含error_code、msg
+            });
+                // 更多接口参考：http://www.geetest.com/install/sections/idx-client-sdk.html
+            };
+            $.ajax({
+                // 获取id，challenge，success（是否启用failback）
+                url: "../gt/web/StartCaptchaServlet.php?t=" + (new Date()).getTime(), // 加随机数防止缓存
+                type: "get",
+                dataType: "json",
+                success: function (data) {
+                    console.log(data);
+                    // 使用initGeetest接口
+                    // 参数1：配置参数
+                    // 参数2：回调，回调的第一个参数验证码对象，之后可以使用它做appendTo之类的事件
+                    initGeetest({
+                        gt: data.gt,
+                        challenge: data.challenge,
+                        new_captcha: data.new_captcha,
+                        product: "float", // 产品形式，包括：float，embed，popup。注意只对PC版验证码有效
+                        offline: !data.success, // 表示用户后台检测极验服务器是否宕机，一般不需要关注
+                        width: '100%',
+                        lang: 'zh-cn',
+                        // 更多配置参数请参见：http://www.geetest.com/install/sections/idx-client-sdk.html#config
+                    }, handlerEmbed);
+                }
+            });
+        </script>
+    </body>
+</html>
